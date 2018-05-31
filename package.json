@@ -1,0 +1,30 @@
+{
+  "name": "country-selector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "mkdir -p dist && cp src/index.html dist/index.html && webpack ---watch -d & node server.js"
+  },
+  "author": "Cal Mosher <calebmosher@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "body-parser": "^1.18.3",
+    "deep-equal": "^1.0.1",
+    "deepmerge": "^2.1.1",
+    "express": "^4.16.3",
+    "http-server": "^0.11.1",
+    "node-sass": "^4.9.0",
+    "raw-loader": "^0.5.1",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "redux": "^4.0.0",
+    "sass-loader": "^7.0.1",
+    "webpack": "^4.10.2",
+    "webpack-cli": "^2.1.4"
+  }
+}

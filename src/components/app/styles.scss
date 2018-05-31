@@ -1,0 +1,93 @@
+.master-list {
+  max-width: 600px;
+  margin: 50px auto 200px;
+}
+
+.region-list {
+  margin-left: 20px;
+
+  &[data-has-children] {
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-family: Arial, sans-serif;
+    margin-bottom: 10px;
+  }
+
+  label {
+    cursor: pointer;
+  }
+
+  input {
+    position: relative;
+    top: -2px;
+    left: -4px;
+    cursor: pointer;
+  }
+}
+
+.submit-button {
+  display: inline-block;
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  background-color: #49e;
+  color: #fff;
+  border-radius: 4px;
+  margin: 50px 0 10px;
+
+  &:hover {
+    background-color: #5af;
+  }
+}
+
+.action {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  position: relative;
+  left: 15px;
+  display: none;
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  &[data-active=true] {
+    display: inline-block;
+  }
+
+  &.spinner {
+    border-radius: 50%;
+    border: 2px solid #666;
+    width: 40px;
+    height: 40px;
+    top: 15px;
+    z-index: 1;
+    animation: spin 600ms infinite linear;
+
+    span {
+      display: block;
+      background: #fff;
+      width: 20px;
+      height: 10px;
+      position: absolute;
+      top: -3px;
+      left: 10px;
+      z-index: 2;
+    }
+  }
+
+  &.success {
+    color: #49e;
+  }
+
+  &.error {
+    color: #999;
+  }
+}
