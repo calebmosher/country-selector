@@ -7,10 +7,15 @@ export default class SubmitButton extends React.Component {
     e.preventDefault();
 
     activateSpinner();
-    const checkedIetfList = this.props.checkedList.map(name => this.props.ietfMap[name]);
+
+    const { masterList } = this.props;
+    const checkedList = Object.keys(masterList).reduce((checkedCodeList, name) => {
+      const { isChecked, alpha2Code } = masterList[name];
+      return checkedCodeList.concat(alpha2Code && isChecked ? [alpha2Code] : []);
+    }, []);
 
     fetch('/api/v1/submit-countries', {
-      body: JSON.stringify(checkedIetfList),
+      body: JSON.stringify(checkedList),
       headers: { 'content-type': 'application/json' },
       method: 'POST',
     })
@@ -21,12 +26,13 @@ export default class SubmitButton extends React.Component {
   }
 
   render() {
+    const { activeAction } = this.props;
     return (
       <div>
-        <a className="submit-button" href="#" onClick={(e) => this.handleClick(e)}>Submit</a>
-        <div className="action spinner" data-active={this.props.activeAction === 'spinner'}><span/></div>
-        <div className="action success" data-active={this.props.activeAction === 'success'}>Success!</div>
-        <div className="action error" data-active={this.props.activeAction === 'error'}>Oops, something went wrong! Try again.</div>
+        <a className="submit-button" href="#" onClick={e => this.handleClick(e)}>Submit</a>
+        <div className="action spinner" data-active={activeAction === 'spinner'}><span/></div>
+        <div className="action success" data-active={activeAction === 'success'}>Success!</div>
+        <div className="action error" data-active={activeAction === 'error'}>Oops, something went wrong! Try again.</div>
       </div>
     );
   }

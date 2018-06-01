@@ -16,46 +16,49 @@ export const store = createStore((state = { countries: [], checkedList: [], acti
         countries: state.countries.concat(action.countryList),
       });
 
-    case 'ADD_ALL_REGIONS':
+    case 'ADD_MASTER_LIST':
       return deepMerge(state, {
-        regions: action.regions,
-        ietfMap: action.ietfMap,
+        masterList: action.masterList,
+        entryList: action.entryList,
       });
 
-    case 'CHECK_ITEM_COUNTRY': {
-      const countryCheckedIndex = state.checkedList.indexOf(action.itemName);
-      if (countryCheckedIndex === -1) {
-        state.checkedList.push(action.itemName);
-        return state;
+    case 'CHECK_ITEM': {
+      const item = state.masterList[action.itemName];
+      item.isChecked = !(item.isChecked || item.isIndeterminate);
+      item.isIndeterminate = false;
+
+      assignCheckedStateToChildren(item);
+      function assignCheckedStateToChildren(item) {
+        if (!item.children) return;
+
+        item.children.forEach(childName => {
+          const child = state.masterList[childName];
+          child.isChecked = item.isChecked;
+          child.isIndeterminate = false;
+          assignCheckedStateToChildren(child);
+        });
       }
-      state.checkedList = state.checkedList.filter(name => name !== action.itemName);
-      return state;
-    }
 
-    case 'CHECK_ITEM_SUBREGION': {
-      const region = getItemByName(action.parentList[0], state.regions);
-      const subregion = getItemByName(action.itemName, region.children);
-      const isCheckedAny = subregion.countryNames.reduce((isChecked, name) =>
-        isChecked || state.checkedList.includes(name), false);
+      assignCheckedStateToParents(item);
+      function assignCheckedStateToParents(item) {
+        const parentObj = state.masterList[item.parent];
+        if (!parentObj) return;
 
-      if (isCheckedAny) {
-        state.checkedList = state.checkedList.filter(name => !subregion.countryNames.includes(name));
-        return state;
+        let isChecked = true;
+        let isIndeterminate = false;
+        parentObj.children.forEach(childName => {
+          const child = state.masterList[childName];
+          isChecked = isChecked && child.isChecked;
+          isIndeterminate = isIndeterminate || child.isChecked || child.isIndeterminate;
+        });
+
+        Object.assign(parentObj, {
+          isChecked,
+          isIndeterminate: isIndeterminate && !isChecked,
+        });
+        assignCheckedStateToParents(parentObj);
       }
-      state.checkedList = state.checkedList.concat(subregion.countryNames);
-      return state;
-    }
 
-    case 'CHECK_ITEM_REGION': {
-      const region = getItemByName(action.itemName, state.regions);
-      const isCheckedAny = region.countryNames.reduce((isChecked, name) =>
-        isChecked || state.checkedList.includes(name), false);
-
-      if (isCheckedAny) {
-        state.checkedList = state.checkedList.filter(name => !region.countryNames.includes(name));
-        return state;
-      }
-      state.checkedList = state.checkedList.concat(region.countryNames);
       return state;
     }
 

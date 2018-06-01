@@ -24,60 +24,48 @@ function invalidateTradeRegionBooleans() {
 }
 
 function sortAllCountries(countries) {
-  const regions = [];
-  const ietfMap = {};
+  const masterList = {};
+  const entryList = [];
 
   countries.forEach(country => {
-    const { region, subregion, name } = country;
+    const { region, subregion, name, alpha2Code } = country;
+    const isChecked = false;
+    const isIndeterminate = false;
 
-    let regionObj = getItemByName(region, regions);
+    let regionObj = masterList[region];
     if (!regionObj) {
-      regionObj = { name: region, children: [], countryNames: [] };
-      regions.push(regionObj);
+      regionObj = { name: region, children: [], isChecked, isIndeterminate };
+      entryList.push(region);
+      masterList[region] = regionObj;
     }
 
-    let subregionObj = getItemByName(subregion, regionObj.children);
+    let subregionObj = masterList[subregion];
     if (!subregionObj) {
-      subregionObj = { name: subregion, children: [], countryNames: [] };
-      regionObj.children.push(subregionObj);
+      subregionObj = { name: subregion, parent: region, children: [], isChecked, isIndeterminate };
+      regionObj.children.push(subregion);
+      masterList[subregion] = subregionObj;
     }
 
-    const countryObj = getItemByName(name, subregionObj.children);
+    let countryObj = masterList[name];
     if (!countryObj) {
-      regionObj.countryNames.push(country.name);
-      subregionObj.countryNames.push(country.name);
-      subregionObj.children.push(country);
-      ietfMap[country.name] = country.alpha2Code;
+      countryObj = { name, parent: subregion, isChecked, alpha2Code };
+      subregionObj.children.push(name);
+      masterList[name] = countryObj;
     }
   });
 
   store.dispatch({
-    type: 'ADD_ALL_REGIONS',
-    regions,
-    ietfMap,
+    type: 'ADD_MASTER_LIST',
+    masterList,
+    entryList,
   });
 }
 
 export function checkItem(itemName, parentList) {
-  switch (parentList.length) {
-    case 2:
-      return store.dispatch({
-        type: 'CHECK_ITEM_COUNTRY',
-        itemName,
-        parentList,
-      });
-    case 1:
-      return store.dispatch({
-        type: 'CHECK_ITEM_SUBREGION',
-        itemName,
-        parentList,
-      });
-    case 0:
-      return store.dispatch({
-        type: 'CHECK_ITEM_REGION',
-        itemName,
-      });
-  }
+  return store.dispatch({
+    type: 'CHECK_ITEM',
+    itemName,
+  });
 }
 
 function activate(actionName) {

@@ -1,6 +1,6 @@
 import React from 'react';
-import RegionList from '../region-list/component.js'
-import SubmitButton from '../submit-button/component.js'
+import ListItem from '../list-item/component'
+import SubmitButton from '../submit-button/component'
 import { store } from '../../state/store';
 import { addTradeRegion } from '../../state/actions';
 import { tradeRegions } from '../../util/trade-regions';
@@ -28,11 +28,18 @@ export default class App extends React.Component {
       <div className="master-list">
         {style(css)}
 
-        {this.state.regions && this.state.regions.map(region =>
-          <RegionList key={region.name} item={region} parentList={[]} checkedList={this.state.checkedList} />
+        {this.state.entryList && this.state.entryList.map(regionName =>
+          <ListItem
+            key={regionName}
+            item={this.state.masterList[regionName]}
+            masterList={this.state.masterList}
+          />
         )}
 
-        <SubmitButton checkedList={this.state.checkedList} ietfMap={this.state.ietfMap} activeAction={this.state.activeAction} />
+        <SubmitButton
+          activeAction={this.state.activeAction}
+          masterList={this.state.masterList}
+        />
       </div>
     );
   }
