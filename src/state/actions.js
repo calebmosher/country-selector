@@ -1,5 +1,4 @@
 import { store } from './store';
-import getItemByName from '../util/get-item-by-name';
 
 export function addTradeRegion(tradeRegion, countryList) {
   store.dispatch({

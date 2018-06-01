@@ -1,9 +1,8 @@
 import { createStore } from 'redux';
 import deepMerge from 'deepmerge';
 import { tradeRegions } from '../util/trade-regions';
-import getItemByName from '../util/get-item-by-name';
 
-export const store = createStore((state = { countries: [], checkedList: [], activeAction: '' }, action) => {
+export const store = createStore((state = { countries: [], activeAction: '' }, action) => {
   switch (action.type) {
     case 'INVALIDATE_TRADE_REGION_BOOLEANS':
       return deepMerge(state,

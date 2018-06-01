@@ -30,7 +30,6 @@ export default class ListItem extends React.Component {
           <ListItem
             key={childName}
             item={this.props.masterList[childName]}
-            checkedList={this.props.checkedList}
             masterList={this.props.masterList}
           />
         )}
